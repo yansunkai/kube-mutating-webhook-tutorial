@@ -1,4 +1,4 @@
-package main
+package webhook
 
 import (
 	"crypto/sha256"
@@ -39,16 +39,16 @@ const (
 )
 
 type WebhookServer struct {
-	sidecarConfig    *Config
-	server           *http.Server
+	SidecarConfig    *Config
+	Server           *http.Server
 }
 
 // Webhook Server parameters
 type WhSvrParameters struct {
-	port int                 // webhook server port
-	certFile string          // path to the x509 certificate for https
-	keyFile string           // path to the x509 private key matching `CertFile`
-	sidecarCfgFile string    // path to sidecar injector configuration file
+	Port int                 // webhook server port
+	CertFile string          // path to the x509 certificate for https
+	KeyFile string           // path to the x509 private key matching `CertFile`
+	SidecarCfgFile string    // path to sidecar injector configuration file
 }
 
 type Config struct {
@@ -80,7 +80,7 @@ func applyDefaultsWorkaround(containers []corev1.Container, volumes []corev1.Vol
 	})
 }
 
-func loadConfig(configFile string) (*Config, error) {
+func LoadConfig(configFile string) (*Config, error) {
 	data, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		return nil, err
@@ -229,9 +229,9 @@ func (whsvr *WebhookServer) mutate(ar *v1beta1.AdmissionReview) *v1beta1.Admissi
 	}
 	
 	// Workaround: https://github.com/kubernetes/kubernetes/issues/57982
-	applyDefaultsWorkaround(whsvr.sidecarConfig.Containers, whsvr.sidecarConfig.Volumes)
+	applyDefaultsWorkaround(whsvr.SidecarConfig.Containers, whsvr.SidecarConfig.Volumes)
 	annotations := map[string]string{admissionWebhookAnnotationStatusKey: "injected"}
-	patchBytes, err := createPatch(&pod, whsvr.sidecarConfig, annotations)
+	patchBytes, err := createPatch(&pod, whsvr.SidecarConfig, annotations)
 	if err != nil {
 		return &v1beta1.AdmissionResponse {
 			Result: &metav1.Status {
@@ -252,7 +252,7 @@ func (whsvr *WebhookServer) mutate(ar *v1beta1.AdmissionReview) *v1beta1.Admissi
 }
 
 // Serve method for webhook server
-func (whsvr *WebhookServer) serve(w http.ResponseWriter, r *http.Request) {
+func (whsvr *WebhookServer) Serve(w http.ResponseWriter, r *http.Request) {
 	var body []byte
 	if r.Body != nil {
 		if data, err := ioutil.ReadAll(r.Body); err == nil {
