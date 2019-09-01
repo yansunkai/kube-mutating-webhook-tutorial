@@ -12,7 +12,7 @@ require (
 	github.com/go-openapi/jsonreference v0.19.2
 	github.com/go-openapi/spec v0.19.2
 	github.com/go-openapi/swag v0.19.4
-	github.com/gogo/protobuf v1.0.0
+	github.com/gogo/protobuf v1.2.2-0.20190723190241-65acae22fc9d
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/google/gofuzz v1.0.0
 	github.com/json-iterator/go v1.1.7
@@ -25,7 +25,6 @@ require (
 	gopkg.in/yaml.v2 v2.2.2
 	k8s.io/api v0.0.0
 	k8s.io/apimachinery v0.0.0
-	k8s.io/kubernetes v1.15.3
 )
 
 replace (

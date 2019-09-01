@@ -6,6 +6,9 @@ metadata:
     app: sidecar-injector
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: sidecar-injector
   template:
     metadata:
       labels:
